@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>3007X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070c;
+    --bg2:#0c0d16;
+    --card:rgba(255,255,255,.045);
+    --card-hover:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.09);
+    --text:#f3f2f8;
+    --muted:#9694a8;
+    --violet:#7c5cfc;
+    --cyan:#39e0c6;
+    --pink:#ff6ec7;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Sarabun', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    padding:48px 16px 100px;
+  }
+  .page{max-width:760px; margin:0 auto; position:relative; z-index:2;}
+
+  .blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.32;z-index:0;pointer-events:none;will-change:transform;}
+  .blob1{width:420px;height:420px;background:var(--violet); top:-140px; left:-120px; animation:float1 22s ease-in-out infinite;}
+  .blob2{width:380px;height:380px;background:var(--pink); top:600px; right:-140px; animation:float2 26s ease-in-out infinite;}
+  .blob3{width:320px;height:320px;background:var(--cyan); top:1200px; left:-100px; opacity:.2; animation:float3 30s ease-in-out infinite;}
+  .blob4{width:340px;height:340px;background:var(--violet); bottom:-120px; right:-80px; opacity:.22; animation:float2 24s ease-in-out infinite reverse;}
+  @keyframes float1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,80px) scale(1.15);}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-60px) scale(1.1);}}
+  @keyframes float3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-40px) scale(1.2);}}
+
+  .noise{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.03;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .card{width:100%;max-width:460px;margin:0 auto;animation:cardIn .8s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes cardIn{from{opacity:0; transform:translateY(24px);}to{opacity:1; transform:translateY(0);}}
+
+  .top{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:28px;}
+
+  .logo-wrap{position:relative;width:124px;height:124px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;}
+  .logo-ring{position:absolute;inset:0;width:100%;height:100%;fill:none;}
+  .ring1{animation:spin 16s linear infinite;}
+  .ring1 circle{stroke:url(#gradRing1);stroke-width:1.6;stroke-dasharray:6 9;opacity:.9;}
+  .ring2{animation:spin 24s linear infinite reverse;}
+  .ring2 circle{stroke:url(#gradRing2);stroke-width:1.2;stroke-dasharray:2 7;opacity:.6;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .logo-core{
+    position:relative;
+    width:82px;height:82px;
+    clip-path:polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    background:linear-gradient(135deg,var(--violet),var(--pink) 55%,var(--cyan));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 34px -4px rgba(124,92,252,.65), inset 0 0 18px rgba(255,255,255,.18);
+    animation:logoPulse 5s ease-in-out infinite;
+    transition:transform .25s cubic-bezier(.16,1,.3,1);
+    overflow:hidden;
+  }
+  .logo-wrap:active .logo-core{transform:scale(.9) rotate(-4deg);}
+  .logo-core::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%);
+    background-size:220% 220%;
+    animation:sweep 3.2s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{background-position:130% 0;}100%{background-position:-30% 0;}}
+  @keyframes logoPulse{0%,100%{box-shadow:0 0 34px -4px rgba(124,92,252,.65), inset 0 0 18px rgba(255,255,255,.18);}50%{box-shadow:0 0 46px -2px rgba(255,110,199,.65), inset 0 0 18px rgba(255,255,255,.18);}}
+  .logo-text{font-family:'Prompt',sans-serif;font-weight:800;font-size:15px;color:#0a0a10;letter-spacing:-.5px;position:relative;z-index:1;}
+
+  .name-wrap{margin-top:22px;}
+  .tag{font-family:'Prompt',sans-serif;font-weight:800;font-size:clamp(34px,9vw,44px);letter-spacing:-1px;
+    background:linear-gradient(90deg, var(--violet), var(--cyan), var(--pink), var(--violet));
+    background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shine 6s linear infinite;display:inline-block;}
+  @keyframes shine{to{background-position:300% center;}}
+  .realname{font-family:'Prompt',sans-serif;font-weight:500;font-size:15px;color:var(--muted);margin-top:6px;letter-spacing:.3px;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;}
+  .chip{font-size:12.5px;padding:6px 13px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px;backdrop-filter:blur(6px);}
+  .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+
+  .bio{text-align:center;color:var(--muted);font-size:14.5px;line-height:1.7;margin-top:18px;padding:0 6px;}
+
+  .links{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
+  .link-btn-row{display:flex;align-items:center;gap:8px;}
+  .link-btn{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:16px;background:var(--card);border:1px solid var(--border);text-decoration:none;color:var(--text);position:relative;overflow:hidden;backdrop-filter:blur(8px);transition:transform .2s ease, background .2s ease, border-color .2s ease;flex:1;opacity:0;animation:linkIn .6s ease forwards;}
+  .link-btn-row:nth-child(1) .link-btn{animation-delay:.15s;}
+  .link-btn-row:nth-child(2) .link-btn{animation-delay:.25s;}
+  .link-btn-row:nth-child(3) .link-btn{animation-delay:.35s;}
+  .link-btn-row:nth-child(4) .link-btn{animation-delay:.45s;}
+  .link-btn-row:nth-child(5) .link-btn{animation-delay:.55s;}
+  @keyframes linkIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+  .link-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg, transparent, rgba(255,255,255,.06), transparent);transform:translateX(-100%);transition:transform .6s ease;}
+  .link-btn:hover{transform:translateY(-2px);background:var(--card-hover);border-color:rgba(255,255,255,.18);}
+  .link-btn:hover::before{transform:translateX(100%);}
+  .link-btn:active{transform:translateY(0) scale(.98);}
+  .link-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg, rgba(124,92,252,.25), rgba(255,110,199,.2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .link-text{flex:1;min-width:0;}
+  .link-title{font-weight:600;font-size:14.5px;font-family:'Prompt',sans-serif;}
+  .link-sub{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .link-arrow{color:var(--muted);font-size:16px;transition:transform .2s ease;}
+  .link-btn:hover .link-arrow{transform:translateX(3px);color:var(--text);}
+
+  .about{margin-top:64px;}
+  .section-head{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:36px;}
+  .section-eyebrow{font-family:'Prompt',sans-serif;font-size:11.5px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+  .section-title{font-family:'Prompt',sans-serif;font-weight:800;font-size:clamp(24px,6vw,30px);}
+  .section-underline{width:54px;height:3px;margin-top:12px;border-radius:99px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));background-size:200% auto;animation:shine 4s linear infinite;}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  .glass-panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 20px;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+  .glass-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);}
+
+  .story{margin-bottom:28px;}
+  .story-text{font-size:14.5px;line-height:1.9;color:var(--text);white-space:pre-wrap;}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+  .stat-card{text-align:center;padding:20px 8px;border-radius:18px;background:var(--card);border:1px solid var(--border);position:relative;}
+  .stat-num{font-family:'Prompt',sans-serif;font-weight:800;font-size:clamp(20px,5.5vw,26px);
+    background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-label{font-size:11.5px;color:var(--muted);margin-top:6px;font-weight:500;}
+  .stat-remove{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:6px;background:rgba(255,60,80,.15);color:#ff8a9a;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:1px solid var(--border);}
+
+  .skills-wrap{margin-bottom:28px;}
+  .skills-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .skill-tile{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:var(--card);border:1px solid var(--border);position:relative;transition:border-color .2s ease, transform .2s ease;}
+  .skill-tile:hover{border-color:rgba(255,255,255,.2);transform:translateY(-1px);}
+  .skill-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--violet),var(--pink));box-shadow:0 0 8px rgba(255,110,199,.6);}
+  .skill-name{font-size:13px;font-weight:500;}
+  .skill-remove{margin-left:auto;color:#ff8a9a;cursor:pointer;font-size:12px;flex-shrink:0;}
+
+  .timeline-wrap{margin-bottom:28px;}
+  .timeline{position:relative;padding-left:26px;}
+  .timeline::before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--violet),var(--cyan),var(--pink));border-radius:2px;opacity:.5;}
+  .tl-item{position:relative;padding-bottom:22px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-dot{position:absolute;left:-26px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--cyan);box-shadow:0 0 10px rgba(57,224,198,.6);}
+  .tl-year{font-family:'Prompt',sans-serif;font-weight:700;font-size:13px;color:var(--cyan);margin-bottom:3px;}
+  .tl-text{font-size:13.5px;color:var(--text);line-height:1.6;}
+  .tl-remove{position:absolute;right:0;top:0;color:#ff8a9a;cursor:pointer;font-size:12px;}
+
+  .quote-wrap{text-align:center;position:relative;padding:8px 10px;}
+  .quote-mark{font-family:'Prompt',sans-serif;font-size:44px;font-weight:800;line-height:1;
+    background:linear-gradient(90deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.5;}
+  .quote-text{font-family:'Prompt',sans-serif;font-weight:500;font-style:italic;font-size:16px;line-height:1.7;color:var(--text);margin-top:2px;}
+
+  footer.pagefoot{text-align:center;margin-top:52px;color:var(--muted);font-size:11.5px;opacity:.6;letter-spacing:.4px;}
+
+  .editable{outline:1px dashed transparent;border-radius:6px;transition:outline-color .2s ease, background .2s ease;cursor:text;}
+  body.edit-on .editable{outline-color:rgba(124,92,252,.5);background:rgba(124,92,252,.06);}
+  body.edit-on .editable:focus{outline-color:var(--cyan);background:rgba(57,224,198,.08);}
+  body.edit-on .link-btn{cursor:text;}
+
+  .edit-only-block{display:none;}
+  body.edit-on .edit-only-block{display:flex;}
+  .edit-only-inline{display:none;}
+  body.edit-on .edit-only-inline{display:inline-flex;}
+
+  .edit-bar{position:fixed;bottom:0;left:0;right:0;z-index:50;display:none;justify-content:center;padding:14px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(0deg, rgba(7,7,12,.95), rgba(7,7,12,.75));backdrop-filter:blur(10px);border-top:1px solid var(--border);}
+  body.edit-on .edit-bar{display:flex;}
+  .edit-bar-inner{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:460px;width:100%;}
+  .ebtn{font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;padding:10px 16px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:.2s ease;}
+  .ebtn:hover{background:var(--card-hover);}
+  .ebtn.primary{background:linear-gradient(90deg, var(--violet), var(--pink));border:none;color:#0a0a10;}
+  .ebtn.small{padding:7px 12px;font-size:11.5px;margin-top:12px;}
+
+  .remove-link, .remove-chip, .edit-link{width:26px;height:26px;border-radius:8px;border:1px solid var(--border);align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;}
+  .remove-link{background:rgba(255,60,80,.12);color:#ff8a9a;}
+  .edit-link{background:rgba(57,224,198,.12);color:var(--cyan);}
+  .remove-chip{margin-left:2px;cursor:pointer;color:#ff8a9a;}
+
+  .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(4,4,8,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease;}
+  .modal-overlay.show{display:flex;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:300px;text-align:center;animation:modalIn .3s cubic-bezier(.16,1,.3,1);}
+  @keyframes modalIn{from{opacity:0; transform:scale(.9) translateY(10px);}to{opacity:1; transform:scale(1) translateY(0);}}
+  .modal h3{font-family:'Prompt',sans-serif;font-size:16px;margin-bottom:14px;font-weight:600;}
+  .modal input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:16px;text-align:center;letter-spacing:4px;font-family:'Prompt',sans-serif;outline:none;margin-bottom:14px;}
+  .modal input:focus{border-color:var(--violet);}
+  .modal .modal-actions{display:flex;gap:8px;}
+  .modal .modal-actions .ebtn{flex:1;}
+  .modal-err{font-size:12px;color:#ff7a90;height:14px;margin-bottom:4px;}
+
+  .toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-140%);z-index:200;background:var(--bg2);border:1px solid var(--border);padding:11px 20px;border-radius:12px;font-size:13px;font-family:'Prompt',sans-serif;font-weight:500;transition:transform .35s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:8px;}
+  .toast.show{transform:translate(-50%,0);}
+  .toast .d{width:7px;height:7px;border-radius:50%;background:var(--cyan);}
+
+  @media (min-width:640px){
+    body{padding-top:72px;}
+    .about{padding:0 20px;}
+  }
+  @media (min-width:760px){
+    .skills-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gradRing1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c5cfc"/>
+      <stop offset="50%" stop-color="#39e0c6"/>
+      <stop offset="100%" stop-color="#ff6ec7"/>
+    </linearGradient>
+    <linearGradient id="gradRing2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6ec7"/>
+      <stop offset="100%" stop-color="#7c5cfc"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<div class="blob blob4"></div>
+<div class="noise"></div>
+
+<div class="page">
+  <div class="card">
+    <div class="top">
+      <div class="logo-wrap" id="logo">
+        <svg class="logo-ring ring1" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58"/></svg>
+        <svg class="logo-ring ring2" viewBox="0 0 120 120"><circle cx="60" cy="60" r="48"/></svg>
+        <div class="logo-core"><span class="logo-text">3007X</span></div>
+      </div>
+      <div class="name-wrap">
+        <div class="tag editable" contenteditable="false" id="tagName">3007X</div>
+        <div class="realname editable" contenteditable="false" id="realName">Thitipoom Ruengsri</div>
+      </div>
+      <div class="chips" id="chips">
+        <span class="chip"><span class="dot"></span><span class="editable" contenteditable="false">Content Creator</span><span class="remove-chip edit-only-inline" onclick="removeChip(this)">✕</span></span>
+        <span class="chip"><span class="dot"></span><span class="editable" contenteditable="false">Bangkok, TH</span><span class="remove-chip edit-only-inline" onclick="removeChip(this)">✕</span></span>
+        <span class="chip"><span class="dot"></span><span class="editable" contenteditable="false">Est. 2024</span><span class="remove-chip edit-only-inline" onclick="removeChip(this)">✕</span></span>
+      </div>
+      <button class="ebtn small edit-only-block" id="addChipBtn" onclick="addChip()">+ เพิ่มแท็ก</button>
+      <p class="bio editable" contenteditable="false" id="bioText">แนะนำตัวเองสั้น ๆ ตรงนี้ได้เลย — เล่าว่าเราเป็นใคร ทำอะไร สนใจเรื่องไหนเป็นพิเศษ ให้คนที่แวะมาเห็นหน้านี้รู้จักเราในไม่กี่วินาที ✦</p>
+    </div>
+
+    <div class="links" id="links">
+      <div class="link-btn-row">
+        <a class="link-btn" href="https://instagram.com" target="_blank">
+          <div class="link-icon">📷</div>
+          <div class="link-text">
+            <div class="link-title editable" contenteditable="false">Instagram</div>
+            <div class="link-sub editable" contenteditable="false">@3007x</div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+        <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+      </div>
+      <div class="link-btn-row">
+        <a class="link-btn" href="https://discord.gg" target="_blank">
+          <div class="link-icon">🎮</div>
+          <div class="link-text">
+            <div class="link-title editable" contenteditable="false">Discord</div>
+            <div class="link-sub editable" contenteditable="false">เข้าร่วมเซิร์ฟเวอร์</div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+        <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+      </div>
+      <div class="link-btn-row">
+        <a class="link-btn" href="https://tiktok.com" target="_blank">
+          <div class="link-icon">🎵</div>
+          <div class="link-text">
+            <div class="link-title editable" contenteditable="false">TikTok</div>
+            <div class="link-sub editable" contenteditable="false">@3007x</div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+        <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+      </div>
+      <div class="link-btn-row">
+        <a class="link-btn" href="mailto:hello@example.com">
+          <div class="link-icon">✉️</div>
+          <div class="link-text">
+            <div class="link-title editable" contenteditable="false">ติดต่อ / Email</div>
+            <div class="link-sub editable" contenteditable="false">hello@example.com</div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+        <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+      </div>
+    </div>
+    <button class="ebtn small edit-only-block" id="addLinkBtn" onclick="addLink()">+ เพิ่มลิงก์ใหม่</button>
+  </div>
+
+  <div class="about">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">About</div>
+      <div class="section-title">เกี่ยวกับฉัน</div>
+      <div class="section-underline"></div>
+    </div>
+
+    <div class="story glass-panel reveal">
+      <div class="story-text editable" contenteditable="false" id="storyText">เขียนเล่าเรื่องราวของตัวเองแบบยาว ๆ ตรงนี้ได้เลย — จุดเริ่มต้น เส้นทาง ความชอบ สิ่งที่กำลังทำอยู่ตอนนี้ หรือเป้าหมายในอนาคต ให้คนที่เข้ามาอ่านรู้จักตัวตนของเราแบบลึกขึ้นอีกนิด
+
+พิมพ์ต่อบรรทัดใหม่ได้ตามสบาย ข้อความส่วนนี้จะยาวแค่ไหนก็ได้</div>
+    </div>
+
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card reveal">
+        <div class="stat-remove edit-only-block" onclick="removeStat(this)">✕</div>
+        <div class="stat-num editable" contenteditable="false">12K+</div>
+        <div class="stat-label editable" contenteditable="false">ผู้ติดตาม</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-remove edit-only-block" onclick="removeStat(this)">✕</div>
+        <div class="stat-num editable" contenteditable="false">34</div>
+        <div class="stat-label editable" contenteditable="false">โปรเจกต์</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-remove edit-only-block" onclick="removeStat(this)">✕</div>
+        <div class="stat-num editable" contenteditable="false">3</div>
+        <div class="stat-label editable" contenteditable="false">ปีประสบการณ์</div>
+      </div>
+    </div>
+    <button class="ebtn small edit-only-block" onclick="addStat()">+ เพิ่มสถิติ</button>
+
+    <div class="skills-wrap" style="margin-top:28px;">
+      <div class="skills-grid" id="skillsGrid">
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">ตัดต่อวิดีโอ</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">กราฟิกดีไซน์</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">ถ่ายภาพ</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">เขียนโค้ด</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">ดนตรี</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+        <div class="skill-tile reveal"><div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">เกม</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div></div>
+      </div>
+      <button class="ebtn small edit-only-block" onclick="addSkill()">+ เพิ่มทักษะ</button>
+    </div>
+
+    <div class="timeline-wrap" style="margin-top:28px;">
+      <div class="timeline reveal" id="timelineList">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-remove edit-only-inline" onclick="removeTimeline(this)">✕</div>
+          <div class="tl-year editable" contenteditable="false">2021</div>
+          <div class="tl-text editable" contenteditable="false">เริ่มทำคอนเทนต์ครั้งแรก</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-remove edit-only-inline" onclick="removeTimeline(this)">✕</div>
+          <div class="tl-year editable" contenteditable="false">2023</div>
+          <div class="tl-text editable" contenteditable="false">ยอดผู้ติดตามทะลุหลักหมื่น</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-remove edit-only-inline" onclick="removeTimeline(this)">✕</div>
+          <div class="tl-year editable" contenteditable="false">2025</div>
+          <div class="tl-text editable" contenteditable="false">เปิดตัวแบรนด์ของตัวเอง</div>
+        </div>
+      </div>
+      <button class="ebtn small edit-only-block" onclick="addTimeline()">+ เพิ่มไทม์ไลน์</button>
+    </div>
+
+    <div class="quote-wrap glass-panel reveal" style="margin-top:28px;">
+      <div class="quote-mark">"</div>
+      <div class="quote-text editable" contenteditable="false" id="quoteText">ทำในสิ่งที่รัก แล้วผลลัพธ์ที่ดีจะตามมาเอง</div>
+    </div>
+  </div>
+
+  <footer class="pagefoot">แตะโลโก้ 5 ครั้งติดกันเพื่อเข้าสู่โหมดแก้ไข</footer>
+</div>
+
+<div class="edit-bar">
+  <div class="edit-bar-inner">
+    <button class="ebtn primary" onclick="saveAll()">💾 บันทึก</button>
+    <button class="ebtn" onclick="exitEdit()">ออกจากโหมดแก้ไข</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pwModal">
+  <div class="modal">
+    <h3>รหัสแก้ไขเว็บ</h3>
+    <input type="password" id="pwInput" inputmode="numeric" maxlength="6" placeholder="••••">
+    <div class="modal-err" id="pwErr"></div>
+    <div class="modal-actions">
+      <button class="ebtn" onclick="closeModal()">ยกเลิก</button>
+      <button class="ebtn primary" onclick="checkPw()">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="d"></span><span id="toastMsg">บันทึกแล้ว</span></div>
+
+<script>
+const STORE_KEY = 'bio_3007x_content_v2';
+let clickCount = 0, clickTimer = null, editing = false;
+
+const logo = document.getElementById('logo');
+logo.addEventListener('click', () => {
+  clickCount++;
+  if(clickTimer) clearTimeout(clickTimer);
+  clickTimer = setTimeout(()=>{ clickCount = 0; }, 2000);
+  if(clickCount >= 5){ clickCount = 0; clearTimeout(clickTimer); openModal(); }
+});
+
+function openModal(){
+  document.getElementById('pwModal').classList.add('show');
+  document.getElementById('pwErr').textContent = '';
+  const inp = document.getElementById('pwInput');
+  inp.value = '';
+  setTimeout(()=>inp.focus(), 100);
+}
+function closeModal(){ document.getElementById('pwModal').classList.remove('show'); }
+document.getElementById('pwInput').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') checkPw(); });
+function checkPw(){
+  const val = document.getElementById('pwInput').value.trim();
+  if(val === '121'){
+    closeModal(); enterEdit(); showToast('เข้าสู่โหมดแก้ไขแล้ว ✎');
+  } else {
+    document.getElementById('pwErr').textContent = 'รหัสไม่ถูกต้อง';
+    const inp = document.getElementById('pwInput');
+    inp.style.animation = 'none';
+    requestAnimationFrame(()=>{ inp.style.animation = 'shake .3s ease'; });
+  }
+}
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}`;
+document.head.appendChild(shakeStyle);
+
+document.addEventListener('click', function(e){
+  if(!editing) return;
+  const a = e.target.closest('.link-btn');
+  if(a){ e.preventDefault(); }
+}, true);
+
+function enterEdit(){
+  editing = true;
+  document.body.classList.add('edit-on');
+  document.querySelectorAll('.editable').forEach(el=> el.setAttribute('contenteditable','true'));
+}
+function exitEdit(){
+  editing = false;
+  document.body.classList.remove('edit-on');
+  document.querySelectorAll('.editable').forEach(el=> el.setAttribute('contenteditable','false'));
+  saveAll();
+}
+
+function addLink(){
+  const links = document.getElementById('links');
+  const row = document.createElement('div');
+  row.className = 'link-btn-row';
+  row.innerHTML = `
+    <a class="link-btn" href="https://" target="_blank">
+      <div class="link-icon">🔗</div>
+      <div class="link-text">
+        <div class="link-title editable" contenteditable="true">ลิงก์ใหม่</div>
+        <div class="link-sub editable" contenteditable="true">แตะไอคอน 🔗 เพื่อแก้ URL</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+    <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+    <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+  `;
+  links.appendChild(row);
+  editLinkUrl(row.querySelector('.edit-link'));
+}
+function editLinkUrl(btn){
+  const row = btn.closest('.link-btn-row');
+  const a = row.querySelector('.link-btn');
+  const url = prompt('ใส่ลิงก์ (URL):', a.getAttribute('href') || 'https://');
+  if(url) a.setAttribute('href', url);
+}
+function removeLink(btn){
+  if(confirm('ลบลิงก์นี้ใช่ไหม?')) btn.closest('.link-btn-row').remove();
+}
+function addChip(){
+  const chips = document.getElementById('chips');
+  const chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.innerHTML = `<span class="dot"></span><span class="editable" contenteditable="true">แท็กใหม่</span><span class="remove-chip edit-only-inline" onclick="removeChip(this)">✕</span>`;
+  chips.appendChild(chip);
+}
+function removeChip(btn){ btn.closest('.chip').remove(); }
+
+function addStat(){
+  const grid = document.getElementById('statsGrid');
+  const card = document.createElement('div');
+  card.className = 'stat-card reveal in';
+  card.innerHTML = `<div class="stat-remove edit-only-block" onclick="removeStat(this)">✕</div>
+    <div class="stat-num editable" contenteditable="true">0</div>
+    <div class="stat-label editable" contenteditable="true">สถิติใหม่</div>`;
+  grid.appendChild(card);
+}
+function removeStat(btn){ btn.closest('.stat-card').remove(); }
+
+function addSkill(){
+  const grid = document.getElementById('skillsGrid');
+  const tile = document.createElement('div');
+  tile.className = 'skill-tile reveal in';
+  tile.innerHTML = `<div class="skill-dot"></div><div class="skill-name editable" contenteditable="true">ทักษะใหม่</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div>`;
+  grid.appendChild(tile);
+}
+function removeSkill(btn){ btn.closest('.skill-tile').remove(); }
+
+function addTimeline(){
+  const list = document.getElementById('timelineList');
+  const item = document.createElement('div');
+  item.className = 'tl-item';
+  item.innerHTML = `<div class="tl-dot"></div>
+    <div class="tl-remove edit-only-inline" onclick="removeTimeline(this)">✕</div>
+    <div class="tl-year editable" contenteditable="true">2026</div>
+    <div class="tl-text editable" contenteditable="true">เหตุการณ์ใหม่</div>`;
+  list.appendChild(item);
+}
+function removeTimeline(btn){ btn.closest('.tl-item').remove(); }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg || 'บันทึกแล้ว';
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+function serializeContent(){
+  return {
+    tagName: document.getElementById('tagName').innerText,
+    realName: document.getElementById('realName').innerText,
+    bioText: document.getElementById('bioText').innerText,
+    storyText: document.getElementById('storyText').innerText,
+    quoteText: document.getElementById('quoteText').innerText,
+    chips: [...document.querySelectorAll('#chips .chip')].map(c=>c.querySelector('.editable').innerText),
+    links: [...document.querySelectorAll('#links .link-btn-row')].map(row=>{
+      const a = row.querySelector('.link-btn');
+      return { href: a.getAttribute('href'), icon: a.querySelector('.link-icon').innerText, title: a.querySelector('.link-title').innerText, sub: a.querySelector('.link-sub').innerText };
+    }),
+    stats: [...document.querySelectorAll('#statsGrid .stat-card')].map(c=>({ num: c.querySelector('.stat-num').innerText, label: c.querySelector('.stat-label').innerText })),
+    skills: [...document.querySelectorAll('#skillsGrid .skill-tile')].map(t=> t.querySelector('.skill-name').innerText),
+    timeline: [...document.querySelectorAll('#timelineList .tl-item')].map(it=>({ year: it.querySelector('.tl-year').innerText, text: it.querySelector('.tl-text').innerText }))
+  };
+}
+
+async function saveAll(){
+  const data = serializeContent();
+  try{
+    if(window.storage){ await window.storage.set(STORE_KEY, JSON.stringify(data), false); }
+    showToast('บันทึกแล้ว ✓');
+  }catch(e){ console.error('save failed', e); showToast('บันทึกไม่สำเร็จ'); }
+}
+
+function esc(s){ const d = document.createElement('div'); d.innerText = s; return d.innerHTML; }
+function escAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+function rebuildChips(chipTexts){
+  const chips = document.getElementById('chips');
+  chips.innerHTML = '';
+  chipTexts.forEach(text=>{
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = `<span class="dot"></span><span class="editable" contenteditable="false">${esc(text)}</span><span class="remove-chip edit-only-inline" onclick="removeChip(this)">✕</span>`;
+    chips.appendChild(chip);
+  });
+}
+function rebuildLinks(links){
+  const container = document.getElementById('links');
+  container.innerHTML = '';
+  links.forEach(l=>{
+    const row = document.createElement('div');
+    row.className = 'link-btn-row';
+    row.innerHTML = `
+      <a class="link-btn" href="${escAttr(l.href)}" target="_blank">
+        <div class="link-icon">${esc(l.icon)}</div>
+        <div class="link-text">
+          <div class="link-title editable" contenteditable="false">${esc(l.title)}</div>
+          <div class="link-sub editable" contenteditable="false">${esc(l.sub)}</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+      <div class="edit-link edit-only-inline" onclick="editLinkUrl(this)">🔗</div>
+      <div class="remove-link edit-only-inline" onclick="removeLink(this)">✕</div>
+    `;
+    container.appendChild(row);
+  });
+}
+function rebuildStats(stats){
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = '';
+  stats.forEach(s=>{
+    const card = document.createElement('div');
+    card.className = 'stat-card reveal';
+    card.innerHTML = `<div class="stat-remove edit-only-block" onclick="removeStat(this)">✕</div>
+      <div class="stat-num editable" contenteditable="false">${esc(s.num)}</div>
+      <div class="stat-label editable" contenteditable="false">${esc(s.label)}</div>`;
+    grid.appendChild(card);
+  });
+}
+function rebuildSkills(skills){
+  const grid = document.getElementById('skillsGrid');
+  grid.innerHTML = '';
+  skills.forEach(name=>{
+    const tile = document.createElement('div');
+    tile.className = 'skill-tile reveal';
+    tile.innerHTML = `<div class="skill-dot"></div><div class="skill-name editable" contenteditable="false">${esc(name)}</div><div class="skill-remove edit-only-inline" onclick="removeSkill(this)">✕</div>`;
+    grid.appendChild(tile);
+  });
+}
+function rebuildTimeline(items){
+  const list = document.getElementById('timelineList');
+  list.innerHTML = '';
+  items.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'tl-item';
+    div.innerHTML = `<div class="tl-dot"></div>
+      <div class="tl-remove edit-only-inline" onclick="removeTimeline(this)">✕</div>
+      <div class="tl-year editable" contenteditable="false">${esc(it.year)}</div>
+      <div class="tl-text editable" contenteditable="false">${esc(it.text)}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function applyData(data){
+  if(data.tagName) document.getElementById('tagName').innerText = data.tagName;
+  if(data.realName) document.getElementById('realName').innerText = data.realName;
+  if(data.bioText) document.getElementById('bioText').innerText = data.bioText;
+  if(data.storyText) document.getElementById('storyText').innerText = data.storyText;
+  if(data.quoteText) document.getElementById('quoteText').innerText = data.quoteText;
+  if(data.chips) rebuildChips(data.chips);
+  if(data.links) rebuildLinks(data.links);
+  if(data.stats) rebuildStats(data.stats);
+  if(data.skills) rebuildSkills(data.skills);
+  if(data.timeline) rebuildTimeline(data.timeline);
+}
+
+async function loadAll(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get(STORE_KEY, false);
+      if(res && res.value) applyData(JSON.parse(res.value));
+    }
+  }catch(e){ /* no saved data yet */ }
+  initReveal();
+}
+
+function initReveal(){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+}
+
+loadAll();
+</script>
+</body>
+</html>
